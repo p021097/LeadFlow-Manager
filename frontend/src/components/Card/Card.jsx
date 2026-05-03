@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import "./Card.css";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext";
+import PropTypes from "prop-types";
 
 const Card = ({ id, name, email, phone, website, company, address }) => {
   const { deleteUser } = useContext(StoreContext);
@@ -101,6 +102,25 @@ const Card = ({ id, name, email, phone, website, company, address }) => {
       </div>
     </div>
   );
+};
+
+Card.propTypes = {
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  phone: PropTypes.string.isRequired,
+  website: PropTypes.string.isRequired,
+  company: PropTypes.shape({
+    name: PropTypes.string,
+    catchPhrase: PropTypes.string,
+    bs: PropTypes.string,
+  }).isRequired,
+  address: PropTypes.shape({
+    street: PropTypes.string,
+    suite: PropTypes.string,
+    city: PropTypes.string,
+    zipcode: PropTypes.string,
+  }).isRequired,
 };
 
 export default Card;

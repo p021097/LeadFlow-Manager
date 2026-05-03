@@ -1,0 +1,24 @@
+import { useContext } from "react";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import PropTypes from "prop-types";
+
+const ProtectedRoute = ({ children }) => {
+  const { authLoading, isAuthenticated } = useContext(AuthContext);
+
+  if (authLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return children;
+};
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export default ProtectedRoute;

@@ -1,6 +1,6 @@
-# React + Vite
+# LeadFlow Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+LeadFlow Manager is a React and Vite app for signing in and managing user records.
 
 Currently, two official plugins are available:
 

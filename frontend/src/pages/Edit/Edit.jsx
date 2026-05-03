@@ -13,7 +13,7 @@ const Edit = () => {
 
 
   useEffect(() => {
-    const selectedUser = usersData.find((user) => user.id === parseInt(id));
+    const selectedUser = usersData.find((user) => (user._id || user.id) === id);
     if (selectedUser) {
       setUser(selectedUser);
     }
@@ -58,8 +58,8 @@ const Edit = () => {
     console.log(updateUser);
 
     if (user) {
-      updateUser(parseInt(id), user);
-      navigate("/");
+      updateUser(id, user);
+      navigate("/users");
     }
   };
 
@@ -169,14 +169,14 @@ const Edit = () => {
           <input
             type="text"
             name="bs"
-            value={user.address.bs}
+            value={user.company.bs}
             onChange={handleChange}
             placeholder="BS"
           />
           <input
             type="text"
             name="catchPhrase"
-            value={user.address.catchPhrase}
+            value={user.company.catchPhrase}
             onChange={handleChange}
             placeholder="Catch Phrase"
           />

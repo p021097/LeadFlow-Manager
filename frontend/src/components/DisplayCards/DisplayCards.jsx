@@ -23,11 +23,11 @@ const DisplayCards = () => {
     <div className="display-cards">
       <h2>Users List</h2>
       <div className="display-users-list">
-        {currentUsers.map((user, idx) => {
+        {currentUsers.map((user) => {
           return (
             <Card
-              key={idx}
-              id={user.id}
+              key={user._id || user.id}
+              id={user._id || user.id}
               name={user.name}
               email={user.email}
               phone={user.phone}

@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 const Add = () => {
   const { createNewUser } = useContext(StoreContext);
   const navigate = useNavigate();
-  const [showAddress, setShowAddress] = useState(false);
   const [user, setUser] = useState({
     name: "",
     username: "",
@@ -56,7 +55,7 @@ const Add = () => {
         ...prevData,
         company: {
           ...prevData.company,
-          [name]: value,
+          [name === "companyName" ? "name" : name]: value,
         },
       }));
     } else {
@@ -86,7 +85,7 @@ const Add = () => {
 
     if (user) {
       createNewUser(user);
-      navigate("/");
+      navigate("/users");
     }
   };
 
@@ -209,7 +208,7 @@ const Add = () => {
           <input
             type="text"
             name="companyName"
-            value={user.company.companyName}
+            value={user.company.name}
             onChange={handleChange}
             placeholder="Company name"
             required

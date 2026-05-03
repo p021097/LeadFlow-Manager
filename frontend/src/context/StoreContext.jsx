@@ -1,18 +1,17 @@
-import { createContext, useEffect, useState } from "react";
-import axios from "axios";
+import { createContext, useContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import api from "../utils/api";
+import { AuthContext } from "./AuthContext";
 
 export const StoreContext = createContext(null);
 
-const StoreContextProvider = (props) => {
-  const url = "https://jsonplaceholder.typicode.com";
+const StoreContextProvider = ({ children }) => {
+  const { authLoading, isAuthenticated } = useContext(AuthContext);
   const [usersData, setUsersData] = useState([]);
 
-
-
-// Fetch the users
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${url}/users`);
+      const res = await api.get("/users");
 
       if (res.status === 200) {
         setUsersData(res.data);
@@ -20,18 +19,22 @@ const StoreContextProvider = (props) => {
         console.error("Unable to fetch users");
       }
     } catch (error) {
+      if (error.response?.status === 401) {
+        setUsersData([]);
+        return;
+      }
+
       alert(`Error while fetching the users Error : ${error}`);
       console.error(error);
     }
   };
 
 
-// Delete the user useing user id
   const deleteUser = async (id) => {
     try {
-      const res = await axios.delete(`${url}/users/${id}`);
+      const res = await api.delete(`/users/${id}`);
       if(res.status === 200){
-        setUsersData((prev) => prev.filter((user)=> user.id !== id))
+        setUsersData((prev) => prev.filter((user)=> (user._id || user.id) !== id))
       alert("User deleted successfully");
 
       }
@@ -40,12 +43,11 @@ const StoreContextProvider = (props) => {
     }
   };
 
-// update the user using user id
 const updateUser = async (id, updatedUser) => {
   try {
-    const res = await axios.put(`${url}/users/${id}`, updatedUser)
+    const res = await api.put(`/users/${id}`, updatedUser)
     if(res.status === 200){
-      setUsersData((prevData) => prevData.map((user) => (user.id === id ? res.data : user)))
+      setUsersData((prevData) => prevData.map((user) => ((user._id || user.id) === id ? res.data : user)))
     alert("User updated successfully")
     }else{
       console.error('Error while updating the user');
@@ -57,16 +59,13 @@ const updateUser = async (id, updatedUser) => {
   }
 }
 
-// Create new user
-
 const createNewUser = async (formData) => {
   try {
-    const generateNewID = usersData.length ? Math.max(...usersData.map(user => user.id)) + 1 : 1
-    const newUser = {...formData, id : generateNewID}
-    const res = await axios.post(`${url}/users`, newUser)
+    const res = await api.post("/users", formData)
     if(res.status === 200 || res.status === 201){
-      setUsersData((prevData)=>[...prevData, newUser])
+      setUsersData((prevData)=>[res.data, ...prevData])
       alert("User Successfully added")
+      return { success: true };
     }else{
       console.error("Error while creating new user");
     }
@@ -77,12 +76,18 @@ const createNewUser = async (formData) => {
 }
 
 
-// useEffects
-
   useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
+    if (!isAuthenticated) {
+      setUsersData([]);
+      return;
+    }
+
     fetchUsers();
-    console.log(usersData);
-  }, []);
+  }, [authLoading, isAuthenticated]);
 
   const contextValue = {
     usersData,
@@ -94,9 +99,13 @@ const createNewUser = async (formData) => {
 
   return (
     <StoreContext.Provider value={contextValue}>
-      {props.children}
+      {children}
     </StoreContext.Provider>
   );
+};
+
+StoreContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default StoreContextProvider;
