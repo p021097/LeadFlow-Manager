@@ -57,10 +57,10 @@ const Auth = () => {
       setSubmitting(false);
     }
 
-    if(loginForm.password.length < 8){
-      setFeedbackMessage("Password must be at lease 8 characters");
-      setSubmitting(false)
-    }
+    // if(loginForm.password.length < 8){
+    //   setFeedbackMessage("Password must be at lease 8 characters");
+    //   setSubmitting(false)
+    // }
 
     const result = await loginUser(loginForm);
     setFeedbackMessage(result.message);
@@ -88,10 +88,10 @@ const Auth = () => {
       setSubmitting(false)
     }
 
-    if(!registerForm.password.length <8){
-      setFeedbackMessage("Password must be at least 8 characters")
-      setSubmitting(false)
-    }
+    // if(!registerForm.password.length < 8){
+    //   setFeedbackMessage("Password must be at least 8 characters")
+    //   setSubmitting(false)
+    // }
 
     if (registerForm.password !== registerForm.confirmPassword) {
       setFeedbackMessage("Passwords do not match.");
