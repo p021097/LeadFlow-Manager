@@ -15,6 +15,10 @@ const initialRegisterForm = {
   confirmPassword: "",
 };
 
+const isValidEmail = (email) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+}
+
 const Auth = () => {
   const navigate = useNavigate();
   const { isAuthenticated, authLoading, loginUser, registerUser } =
@@ -48,6 +52,16 @@ const Auth = () => {
     setSubmitting(true);
     setFeedbackMessage("");
 
+    if(!isValidEmail(loginForm.email)){
+      setFeedbackMessage("Please enter valid email address");
+      setSubmitting(false);
+    }
+
+    if(loginForm.password.length < 8){
+      setFeedbackMessage("Password must be at lease 8 characters");
+      setSubmitting(false)
+    }
+
     const result = await loginUser(loginForm);
     setFeedbackMessage(result.message);
 
@@ -63,6 +77,21 @@ const Auth = () => {
     event.preventDefault();
     setSubmitting(true);
     setFeedbackMessage("");
+
+    if(!registerForm.name.trim()){
+      setFeedbackMessage("Full name is required")
+      setSubmitting(false)
+    }
+
+    if(!isValidEmail(registerForm.email)){
+      setFeedbackMessage("Please enter valid email address.")
+      setSubmitting(false)
+    }
+
+    if(!registerForm.password.length <8){
+      setFeedbackMessage("Password must be at least 8 characters")
+      setSubmitting(false)
+    }
 
     if (registerForm.password !== registerForm.confirmPassword) {
       setFeedbackMessage("Passwords do not match.");
@@ -160,7 +189,7 @@ const Auth = () => {
                 value={registerForm.password}
                 onChange={handleRegisterChange}
                 placeholder="Password"
-                minLength="6"
+                minLength="8"
                 required
               />
               <input
@@ -169,7 +198,7 @@ const Auth = () => {
                 value={registerForm.confirmPassword}
                 onChange={handleRegisterChange}
                 placeholder="Confirm password"
-                minLength="6"
+                minLength="8"
                 required
               />
               <button type="submit" disabled={submitting}>
